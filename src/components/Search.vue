@@ -55,7 +55,7 @@
       </div>
     </div>
     <div class="row"  style="text-align:center;" v-else id="row-2" >
-      <h4 >Aradığınız kelimede film bulunamadı lütfen geçerli film adı deneyiniz.</h4>
+      <h4>Lütfen bir film arayınız</h4>
     </div>
   </div>
 </template>
