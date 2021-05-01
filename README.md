@@ -3,8 +3,8 @@ It is kind of a movie app. You can write your alternative scenario under the fil
 Also you can see other alternative scenario of other people. 
 You can see the film summaries, add your favourite films and search for films in the application.
 
-
 Technologies: Vue.js, firebase (realtime database, Authentication, deploying)
+
 Used api for movies: https://www.themoviedb.org/
 
 
