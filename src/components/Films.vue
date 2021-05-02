@@ -10,7 +10,7 @@
           <router-link tag="h4" @click.native="sendIdToStore(film.id)" id="filmTitle" :to="{name:'film',params:{id:film.id}}" >{{ film.title }}</router-link>
           <p>Puan: {{ film.vote_average }}</p>
           <img id="poster" :src="getPoster(film.poster_path)" style="width:100%;">
-          <button @click="addFilmToDb(film)" id="addFavBtn" class="btn">Fava Ekle</button>
+          <button @click="addFilmToDb(film)" id="addFavBtn" class="btn"><i class="fas fa-heart"></i></button>
         </div>      
       </div>
     </div>
@@ -78,11 +78,11 @@ export default {
   transform:perspective(100px) translateZ(10px);
 }
 #addFavBtn{
-  color: aliceblue;
+  color: red;
   margin: 10px 0px;
   border-radius: 0px;
   border: 1px white solid;
- 
+  width: 50%;
 }
 #addFavBtn:hover{
 
