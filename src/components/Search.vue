@@ -48,7 +48,7 @@
             :src="getPoster(film.poster_path)"
             style="width:100%;"
           />
-          <button @click="addFilmToDb(film)" id="addFavBtn" class="btn">Fava Ekle</button>
+          <button @click="addFilmToDb(film)" id="addFavBtn" class="btn"><i class="fas fa-heart"></i></button>
 
 
         </div>
