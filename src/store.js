@@ -21,7 +21,9 @@ const store = new Vuex.Store({
     filmId:null,
     isAuth:true,
     showNavbar:false,
-    comments:[]
+    comments:[],
+    email:null,
+    showLoading:true
   },
   mutations: {
     setFilms(state, comingFilms) {
@@ -53,6 +55,7 @@ const store = new Vuex.Store({
       state.filmId = payload;
     },
     setEmail(state,payload){
+      state.email = payload;
       localStorage.setItem("email",payload)    
     },
     setComments(state,payload){
@@ -132,6 +135,7 @@ const store = new Vuex.Store({
       commit("removeToken");
       commit("removeUid");
       localStorage.removeItem("expirationDate");
+      localStorage.removeItem("email");
     },
     setTimeOutForToken({ dispatch }, expirresIn) {
       setTimeout(() => {
@@ -234,6 +238,20 @@ const store = new Vuex.Store({
       }
       ref1.set(data);
       ref2.set(data);
+    },
+    // eslint-disable-next-line no-unused-vars
+    async uploadImageToFirebase({commit,dispatch,state},payload){
+      let uid = localStorage.getItem("uid");
+      let storageRef = firebase.storage().ref();
+      let ref = storageRef.child("images/"+uid);
+      return ref.put(payload);
+    },
+    // eslint-disable-next-line no-unused-vars
+    async getProfilePhoto({commit,dispatch,state},payload){
+      let uid = localStorage.getItem("uid");
+      let storageRef = firebase.storage().ref();
+      let res = await storageRef.child("images/"+uid).getDownloadURL();
+      return res;
     }
   },
   getters: {
@@ -261,6 +279,9 @@ const store = new Vuex.Store({
     },
     getComments(state){
       return state.comments;
+    },
+    getLoadingStatus(state){
+      return state.showLoading;
     }
   }
 });
