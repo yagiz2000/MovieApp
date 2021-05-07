@@ -69,7 +69,8 @@ export default {
     },
     computed:{
         email(){
-            return this.$store.getters.getEmail;
+            let email = localStorage.getItem("email");
+            return email;        
         },
         username(){
             let email = localStorage.getItem("email");
