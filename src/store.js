@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import Axios from "axios";
-import { router } from "./router";
+import auth from "./auth";
 Vue.use(Vuex);
 import firebase from "firebase";
 const config = {
@@ -63,70 +62,13 @@ const store = new Vuex.Store({
     }
   },
   actions: {
-    initAuth({ commit, dispatch }) {
-      let token = localStorage.getItem("token");
-
-      if (token) {
-        let expireDate = localStorage.getItem("expirationDate");
-        let intExpire = +expireDate
-        let now = new Date().getTime();
-        if (now >= intExpire) {
-          dispatch("logOut");
-        } else {
-          let activeTimeOut = intExpire - now; //Kalan süre
-          dispatch("setTimeOutForToken", activeTimeOut); //Refresh olsa bile kalan süreyi veriyoruz.
-          commit("setToken", token);
-          router.push("/");
-        }
-      } else {
-        router.push("/auth");
-        return false;
-      }
-    },
     async getFilmsFromApi({ commit }) {
       const res = await fetch(
         "https://api.themoviedb.org/3/movie/popular?api_key=627db53bdee442611e5ff76d64be01c1&language=en-US&page=1"
       );
       const jsnd = await res.json();
       commit("setFilms", jsnd.results);
-    },
-    // eslint-disable-next-line no-unused-vars
-    async signUpOrIn({ commit, dispatch, state }, authData) {
-      const rootUrl = "https://identitytoolkit.googleapis.com/v1/accounts:";
-      if (authData.isUser) {
-        const logInUrl =
-          rootUrl +
-          "signInWithPassword?key=AIzaSyBUojiNoUITZxBD9T8Wqx773bnD0LCoGiw";
-        const res = await Axios.post(logInUrl, {
-          email: authData.email,
-          password: authData.password,
-          returnSecureToken: true,
-        });
-        let intExpires = +res.data.expiresIn;
-        localStorage.setItem("expirationDate",new Date().getTime() + (intExpires*10000));
-        commit("setEmail",res.data.email);
-        commit("setuid",res.data.localId);
-        commit("setToken", res.data.idToken);
-        commit("setTokenToClient", res.data.idToken);
-        dispatch("setTimeOutForToken", +res.data.expiresIn);
-        return res;
-      }
-      const signUpUrl =
-        rootUrl + "signUp?key=AIzaSyBUojiNoUITZxBD9T8Wqx773bnD0LCoGiw";
-      const res = await Axios.post(signUpUrl, {
-        email: authData.email,
-        password: authData.password,
-        returnSecureToken: true,
-      });
-      let intExpires = +res.data.expiresIn;
-      localStorage.setItem("expirationDate",new Date().getTime() + (intExpires*10000));
-      commit("setToken", res.data.idToken);
-      commit("setTokenToClient", res.data.idToken);
-      commit("setuid",res.data.localId);
-      dispatch("setTimeOutForToken", +res.data.expiresIn);
-      commit("setEmail",res.data.email);
-      return res;
-    },
+    },    
     removeToken({ commit }) {
       commit("removeToken");
     },
@@ -169,7 +111,6 @@ const store = new Vuex.Store({
     },
     // eslint-disable-next-line no-unused-vars
     async addComment({commit},payload){
-  
       const uid = localStorage.getItem("uid");
       //const url = "https://filmapp-aa692-default-rtdb.firebaseio.com/users/"+uid+"/comments.json";
       let ref1 = firebase.database().ref().child("users").child(uid).child("comments").push(); 
@@ -252,7 +193,7 @@ const store = new Vuex.Store({
       let storageRef = firebase.storage().ref();
       let res = await storageRef.child("images/"+uid).getDownloadURL();
       return res;
-    }
+    },    
   },
   getters: {
     emitFilms(state) {
@@ -283,6 +224,9 @@ const store = new Vuex.Store({
     getLoadingStatus(state){
       return state.showLoading;
     }
+  },
+  modules:{
+    auth
   }
 });
 export default store;

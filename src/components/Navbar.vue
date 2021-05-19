@@ -27,7 +27,11 @@
             </router-link>
             <router-link class="nav-link" @click.native="changeSelectedLink(3)" :class='{active: isSelected===3}' tag="a" to="/comments">
                 Senaryoların
-            </router-link><a @click.prevent="clearToken"  class="nav-link" id="logout-btn"  href="#">Çıkış Yap</a>
+            </router-link>
+            <router-link class="nav-link" @click.native="changeSelectedLink(4)" :class='{active: isSelected===4}' tag="a" to="/profile">
+                Profil
+            </router-link>
+            <a @click.prevent="signOut"  class="nav-link" id="logout-btn"  href="#">Çıkış Yap</a>
           </div>
         </div>
       </div>
@@ -50,24 +54,19 @@ export default {
       return this.$store.getters.showNavbar;
     }
   },
-
     methods:{
-      clearToken(){
-        this.$store.dispatch("logOut");
+      signOut(){
+        this.$store.dispatch("signOut");
         this.$router.push("/auth");
-        this.makeAuth();
         this.isAuth = this.$store.getters.getAuthStatus;
       },
       changeSelectedLink(order){
         this.isSelected = order;
       },
-      makeAuth(){
-        this.$store.commit("changeAuth");
-      }
+  
     }
 };
 </script>
-
 <style>
 .nav-link{
     text-align: center;
