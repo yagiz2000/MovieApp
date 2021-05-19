@@ -121,30 +121,31 @@ export default {
         });
         return false;
       }
-      this.$store
-        .dispatch("signUpOrIn", { ...this.user, isUser: this.isUser })
-        // eslint-disable-next-line no-unused-vars
-        .then((response) => {
-          this.$router.push("/");
+        let payload = {
+            ...this.user,
+            isUser:this.isUser
+        }
+        this.$store.dispatch("signUpOrIn",payload)
+        .then((res)=>{
+          console.log(res);
         })
-        .catch(() => {
-          if (!this.isUser) {
+        .catch(err=>{
+        if(err.type==="signIn"){
             Swal.fire({
-              title: "Hata",
-              text:
-                "Bu e-posta daha önceden alınmış ya da şifreniz 6 karakterden az, lütfen tekrar deneyin",
-              icon: "warning",
-            });
-            return false;
-          }
+            title: "Hata",
+            icon: "warning",
+            showCancelButton: true,
+            text: err.msg,
+          });
+        }
+        if(err.type==="signUp"){
           Swal.fire({
             title: "Hata",
             icon: "warning",
             showCancelButton: true,
-            text: "Şifre ya da e-posta hatalı. Lütfen tekrar dene",
+            text: err.msg,
           });
-
-          this.user = {};
+        }
         });
     },
   },

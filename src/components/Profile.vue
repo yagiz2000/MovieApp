@@ -23,19 +23,18 @@
                       <h5>Email</h5>
                       <p>{{email}}</p>
                       <div class="info-btns">
-                          <button class="btn btn-success">Güncelle</button>
+                            <button class="btn btn-success edit-btn">Güncelle</button>
+                            <button @click="updatePassword" class="btn btn-danger edit-btn">Şifreni Değiştir</button>
                       </div>
                   </div>
               </div>
           </div>
       </div>
-      
   </div>
 </template>
-
 <script>
 import {RotateSquare2} from 'vue-loading-spinner'
-
+import Swal from "sweetalert2";
 export default {
     components:{
         RotateSquare2
@@ -65,12 +64,38 @@ export default {
             this.pp = url;
             this.showLoading= false;
         })
+        },
+        updatePassword(){
+            Swal.fire({
+                title:"Şifre Güncelleme",
+                icon:"info",
+                input:"password",
+                showCancelButton:true,
+                inputValue:"",
+                inputValidator:(value)=>{
+                    if(value ==="" || value.length<6){
+                    Swal.fire({
+                        title:"Hata",
+                        icon:"warning"
+                        ,text:"Şifreniz 6 karakterden az olmamalıdır"
+                    });
+                    }
+                    else{
+                        this.$store.dispatch("updatePassword",value);
+                        Swal.fire({
+                        title:"Senar",
+                        icon:"success"
+                        ,text:"Şifreniz başarıyla değiştirildi"
+                    });
+                    }
+                }
+            });
         }
     },
     computed:{
         email(){
             let email = localStorage.getItem("email");
-            return email;        
+            return email;
         },
         username(){
             let email = localStorage.getItem("email");
@@ -80,7 +105,6 @@ export default {
     }
 }
 </script>
-
 <style>
 .profile-card{
     border: 5px solid black;
@@ -103,11 +127,14 @@ export default {
 .info-card{
     border: 1px solid black;
     margin: 20px;
+    padding:10px;
 }
 .info{
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-
+.edit-btn{
+    margin: 0 10px;
+}
 </style>
